@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seller Details</title>
+</head>
+<body>
+    <h1>Seller Details</h1>
+    <h2>{{ seller.name }}</h2>
+    <img src="{{ seller.picture.url }}" alt="{{ seller.name }}" width="200">
+    <p><strong>Address:</strong> {{ seller.address }}</p>
+    <p><strong>Contact Details:</strong> {{ seller.contact_details }}</p>
+    <a href="{% url 'startseller:all_sellers' %}">Back to Sellers List</a>
+
+    {% comment %} <h2>Products</h2>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }}</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Sign up</h2>
+      {% if messages %}
+        <div class="alert alert-info">
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="id_first_name">First Name:</label>
+          <input type="text" id="id_first_name" name="first_name" required />
+        </div>
+        <div class="form-group">
+          <label for="id_last_name">Last Name:</label>
+          <input type="text" id="id_last_name" name="last_name" required />
+        </div>
+        <div class="form-group">
+          <label for="id_email">Email:</label>
+          <input type="email" id="id_email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="id_username">Username:</label>
+          <input type="text" id="id_username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="id_password1">Password:</label>
+          <input type="password" id="id_password1" name="password1" required />
+        </div>
+        <div class="form-group">
+          <label for="id_password2">Confirm Password:</label>
+          <input type="password" id="id_password2" name="password2" required />
+        </div>
+        <div class="form-group">
+          <button type="submit">Sign up</button>
+        </div>
+      </form>
+      <p class="text-center">
+        Already have an account? <a href="{% url 'startseller:login' %}">Login</a>
+      </p>
+    </div>
+  </body>
+</html>
