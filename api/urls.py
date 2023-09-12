@@ -14,6 +14,9 @@ from .views import (
     SellerViewSet,
     OrderViewSet,
     SellerReviewViewSet,
+    SignupAPIView,
+    LoginAPIView,
+    LogoutAPIView
 )
 
 router = DefaultRouter()
@@ -32,6 +35,9 @@ router.register(r'orders', OrderViewSet)
 router.register(r'seller-reviews', SellerReviewViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('startseller/', include(router.urls)),
+    path('startseller/signup/', SignupAPIView.as_view(), name='api_signup'),
+    path('startseller/login/', LoginAPIView.as_view(), name='api_login'),
+    path('startseller/logout/', LogoutAPIView.as_view(), name='api_logout'),  # Add this line for LogoutAPIView
     # Add any additional URLs if needed
 ]
