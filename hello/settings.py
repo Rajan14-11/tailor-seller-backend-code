@@ -26,7 +26,35 @@ SECRET_KEY = 'django-insecure-$kno%t&uf$37@gnzd50$#-vt^lb&9y)j-lw^i5cdwdye%+g95q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*','127.0.0.1:8000']
+
+CSRF_TRUSTED_ORIGINS = [
+     "http://localhost:8000"
+]
+CORS_ALLOW_ALL_ORIGINS=False
+CORS_ALLOW_METHODS = [
+'DELETE',
+'GET',
+'OPTIONS',
+'PATCH',
+'POST',
+'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_USE_SESSIONS=True
 
 
 # Application definition
@@ -43,8 +71,12 @@ INSTALLED_APPS = [
     'myadmin',
     'startseller',
     'rest_framework',
+    'corsheaders',
     'api'
 ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,9 +86,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'hello.urls'
+SESSION_COOKIE_SAMESITE = None
+
 
 TEMPLATES = [
     {

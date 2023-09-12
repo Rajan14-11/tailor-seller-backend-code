@@ -9,15 +9,17 @@ from .forms import TaxInfoForm, VerifyDetailsForm,ExtendedUserCreationForm,Selle
 from .models import SellerInfo,Category,Seller,Order,SellerProduct,BusinessInfo,StoreInfo,ProductInfo,TaxInfo,VerifyDetails
 from products.models import Product
 from django.db.models import Sum, F, ExpressionWrapper, IntegerField
-from django.db.models import Avg 
+from django.db.models import Avg
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def signup_view(request):
     if request.method == 'POST':
         form = ExtendedUserCreationForm(request.POST)
         if form.is_valid():
-            password = form.cleaned_data['password1']
-            confirm_password = form.cleaned_data['password2']
-            
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+
             if password == confirm_password:
                 user = form.save(commit=False)
                 user.first_name = form.cleaned_data['first_name']
@@ -63,7 +65,7 @@ def logout_view(request):
 @login_required
 def business_info(request):
     business_info, created = BusinessInfo.objects.get_or_create(user=request.user)
-    
+
     if request.method == 'POST':
         form = BusinessInfoForm(request.POST, instance=business_info)
         if form.is_valid():
@@ -144,14 +146,14 @@ def verify_details(request):
 @login_required
 def toggle_seller_status(request, seller_id):
     seller = get_object_or_404(Seller, id=seller_id)
-    seller.active = not seller.active  
+    seller.active = not seller.active
     seller.save()
     return redirect('startseller:all_sellers')
 
 @login_required
 def toggle_product_status(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    product.active = not product.active  
+    product.active = not product.active
     product.save()
     return redirect('startseller:seller_product_list')
 
@@ -174,7 +176,7 @@ def home(request):
     except Seller.DoesNotExist:
         seller = Seller.objects.create(user=request.user, business_name='Your Business Name', business_address='Your Business Address')
     seller_orders = Order.objects.filter(user=request.user)
-    
+
     # Products = SellerProduct.objects.all()
     total_products = SellerProduct.objects.filter(user = request.user).count()
     total_categories = SellerProduct.objects.filter(user = request.user).values('category').distinct().count()
@@ -216,7 +218,7 @@ def add_category(request):
 def update_category(request, category_id):
     category = Category.objects.get(pk=category_id)
     categories = Category.objects.all()
-    
+
     if request.method == 'POST':
         category_name = request.POST['category_name']
         category_code = request.POST['category_code']
@@ -224,12 +226,12 @@ def update_category(request, category_id):
         sub_category_id = request.POST.get('sub_category', None)
         category.name = category_name
         category.code = category_code
-        
+
         if parent_category_id:
             category.parent_category_id = parent_category_id
         else:
             category.parent_category = None
-        
+
         if sub_category_id:
             category.sub_category_id = sub_category_id
         else:
@@ -238,7 +240,7 @@ def update_category(request, category_id):
         category.save()
 
         return redirect('add_category')
-    
+
     return render(request, 'startseller/update_category.html', {'categories': categories, 'category': category})
 
 def delete_category(request, category_id):
@@ -247,7 +249,7 @@ def delete_category(request, category_id):
     if request.method == 'POST':
         category.delete()
         return redirect('add_category')
-    
+
     return render(request, 'startseller/delete_category.html', {'category': category})
 
 @login_required
@@ -273,7 +275,7 @@ def product_details(request, product_id):
         'form': form,
         # 'average_rating': average_rating,
     }
-    
+
     return render(request, 'startseller/product_details.html', context)
 
 @login_required
@@ -308,12 +310,12 @@ def list_sellers(request):
                     'address': seller.address,
                     'contact_details': seller.contact_details} for seller in sellers]
     return render(request, 'startseller/list_sellers.html', {'seller_data': seller_data})
-    
+
 
 @login_required
 def seller_detail(request, seller_id):
     seller = SellerInfo.objects.get(id=seller_id)
-    # products = seller.product_set.all()  
+    # products = seller.product_set.all()
 
     context = {
         'seller': seller,
@@ -326,10 +328,10 @@ def add_seller(request):
         form = SellerForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('startseller:all_sellers') 
+            return redirect('startseller:all_sellers')
     else:
         form = SellerForm()
-    
+
     context = {
         'form': form,
     }
@@ -363,7 +365,7 @@ def add_product(request):
 
 # @login_required
 def seller_product_list(request):
-    products = SellerProduct.objects.filter(user = request.user)  
+    products = SellerProduct.objects.filter(user = request.user)
     context = {
         'products': products,
     }
@@ -371,7 +373,7 @@ def seller_product_list(request):
 
 @login_required
 def order_details(request, order_id):
-    order = get_object_or_404(Order, id=order_id)  
+    order = get_object_or_404(Order, id=order_id)
     context = {'order': order}
     return render(request, 'startseller/order_details.html', context)
 
