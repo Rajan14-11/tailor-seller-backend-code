@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from .models import (
     MyAdminProduct,
     MyAdminSellerInfo,
@@ -14,6 +15,16 @@ from .models import (
     Order,
     SellerReview,
 )
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email')
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 
 class MyAdminProductSerializer(serializers.ModelSerializer):
     class Meta:
